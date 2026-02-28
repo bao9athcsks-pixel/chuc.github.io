@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Thành - 8/3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --curtain-color: #8b0000;
+            --gold-metallic: #d4af37;
+            --wax-seal: #ff6b81;
+        }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; font-family: 'Poppins', sans-serif;
+            background: #000; 
+        }
+
+        /* --- Rèm Nhung Real --- */
+        .curtain-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; z-index: 100;
+        }
+
+        .curtain-left, .curtain-right {
+            width: 50%; height: 100%; background: var(--curtain-color);
+            background-image: linear-gradient(to right, 
+                rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 10%, 
+                rgba(0,0,0,0.2) 20%, rgba(0,0,0,0) 30%, 
+                rgba(0,0,0,0.3) 40%, rgba(0,0,0,0) 50%, 
+                rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 70%, 
+                rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 90%, rgba(0,0,0,0.4) 100%);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+            transition: transform 2s cubic-bezier(0.7, 0, 0.3, 1);
+            position: relative;
+        }
+
+        .opened .curtain-left { transform: translateX(-100%) skewX(-5deg); }
+        .opened .curtain-right { transform: translateX(100%) skewX(5deg); }
+
+        /* --- NÂNG CẤP: Phong bì thủ công 3D --- */
+        .envelope-wrapper {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 110; cursor: pointer; text-align: center;
+            transition: transform 0.5s ease, opacity 0.5s;
+        }
+
+        /* Hiệu ứng di chuột: Phóng to và xoay nhẹ */
+        .envelope-wrapper:hover {
+            transform: translate(-50%, -55%) scale(1.05) rotate(-2deg);
+        }
+
+        .envelope {
+            width: 220px; height: 150px; background: #faf3dd;
+            position: relative; border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Hình cắt ren lượn sóng của nắp thư */
+        .envelope::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 70px;
+            background: #f3e5ab;
+            border-radius: 0 0 50% 50% / 0 0 20px 20px;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        /* Con dấu sáp trái tim metallic */
+        .wax-seal {
+            width: 50px; height: 50px; background: var(--wax-seal);
+            border-radius: 50%; position: absolute; top: 45px; z-index: 3;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 0 15px rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- NÂNG CẤP: Dòng chữ Calligraphy ánh kim --- */
+        .envelope-text {
+            color: var(--gold-metallic); margin-top: 30px; 
+            font-family: 'Allura', cursive; /* Font chữ viết tay mảnh */
+            font-size: 2.2rem; font-weight: 400;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            animation: textPulse 2s infinite, glow 3s infinite alternate;
+        }
+
+        /* --- Nền Nội Dung & Cánh hoa --- */
+        .main-content {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffdee9 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1; opacity: 0; transition: opacity 1s;
+        }
+
+        .main-content::before {
+            content: '🌸'; position: absolute; top: 20px; left: 20px; font-size: 100px; opacity: 0.2; transform: rotate(-15deg);
+        }
+        .main-content::after {
+            content: '🌿'; position: absolute; bottom: 20px; right: 20px; font-size: 100px; opacity: 0.2; transform: rotate(15deg);
+        }
+
+        .show-content .main-content { opacity: 1; }
+
+        .container { 
+            max-width: 650px; width: 85%; padding: 3rem; 
+            background: rgba(255, 255, 255, 0.7); border-radius: 30px; 
+            backdrop-filter: blur(20px); border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 25px 50px rgba(214, 51, 132, 0.15);
+            text-align: center; z-index: 2;
+        }
+
+        h1 { color: #c0392b; font-family: 'Dancing Script', cursive; font-size: 3rem; margin-top: 0; }
+        #typewriter { line-height: 1.8; font-size: 1.15rem; color: #444; text-align: justify; }
+
+        .petal {
+            position: absolute; background: #ffb7c5; border-radius: 150% 0 150% 0;
+            opacity: 0.7; pointer-events: none; animation: petalFall linear infinite;
+        }
+
+        /* Hiệu ứng trái tim bay ra khi hover */
+        .hover-heart {
+            position: absolute; color: rgba(255, 107, 129, 0.8); pointer-events: none;
+            animation: flyUp 2s ease-out forwards;
+        }
+
+        @keyframes petalFall { 0% { transform: translateY(-10vh) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); } }
+        @keyframes textPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.03); opacity: 0.8; } }
+        @keyframes glow { from { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--gold-metallic); } to { text-shadow: 0 0 10px #fff, 0 0 20px var(--gold-metallic), 0 0 30px var(--wax-seal); } }
+        @keyframes flyUp { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div class="curtain-container" id="curtainLayer">
+        <div class="curtain-left"></div>
+        <div class="envelope-wrapper" id="envelopeBtn">
+            <div class="envelope">
+                <div class="wax-seal">❤️</div>
+            </div>
+            <div class="envelope-text">Chạm nhẹ để mở thư</div>
+        </div>
+        <div class="curtain-right"></div>
+    </div>
+
+    <div class="main-content" id="mainBg">
+        <div class="container">
+            <h1>Thành thân mến,</h1>
+            <div id="typewriter"></div>
+        </div>
+    </div>
+
+    <script>
+        const text = `Nhân ngày 8/3, mình muốn gửi đến bạn những lời chúc chân thành nhất. 🌸\n\nNăm cuối cấp chắc hẳn mang theo nhiều áp lực, nhưng mình tin rằng với sự quyết tâm của bạn, mọi cố gắng sẽ được đền đáp xứng đáng.\n\nChúc bạn luôn tự tin, bản lĩnh và giữ vững tinh thần cho những kỳ thi quan trọng sắp tới. Mong rằng tuổi 18 của bạn sẽ thật rực rỡ và đầy tự hào.\n\nHy vọng bạn sẽ đạt kết quả thật tốt, đậu vào ngôi trường mong muốn và bắt đầu một chặng đường mới đầy hứa hẹn. Cố lên Thành nhé! ✨`;
+
+        const envelopeWrapper = document.getElementById('envelopeBtn');
+
+        // Hiệu ứng trái tim bay ra khi hover
+        envelopeWrapper.addEventListener('mousemove', function(e) {
+            if(Math.random() > 0.9) { // Chỉ tạo tim 10% số lần di chuyển
+                const heart = document.createElement('div');
+                heart.innerHTML = '💖';
+                heart.className = 'hover-heart';
+                const size = Math.random() * 10 + 10 + 'px';
+                heart.style.fontSize = size;
+                
+                // Vị trí xuất hiện ngẫu nhiên gần lá thư
+                const rect = envelopeWrapper.getBoundingClientRect();
+                heart.style.left = (e.clientX - rect.left - 20) + 'px';
+                heart.style.top = (e.clientY - rect.top - 20) + 'px';
+
+                // Hướng bay ngẫu nhiên
+                heart.style.setProperty('--x', (Math.random() - 0.5) * 100 + 'px');
+                heart.style.setProperty('--y', (Math.random() - 0.5) * -150 - 50 + 'px');
+
+                envelopeWrapper.appendChild(heart);
+                setTimeout(() => heart.remove(), 2000);
+            }
+        });
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            const size = Math.random() * 10 + 10 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 5 + 5 + 's';
+            document.getElementById('mainBg').appendChild(petal);
+            setTimeout(() => petal.remove(), 10000);
+        }
+
+        function typeWriter(text, i = 0) {
+            if (i < text.length) {
+                const char = text.charAt(i);
+                document.getElementById('typewriter').innerHTML += (char === '\n' ? '<br>' : char);
+                setTimeout(() => typeWriter(text, i + 1), 50);
+            }
+        }
+
+        envelopeWrapper.addEventListener('click', function() {
+            this.style.opacity = '0';
+            setTimeout(() => this.style.display = 'none', 500);
+            document.getElementById('curtainLayer').classList.add('opened');
+            document.body.classList.add('show-content');
+            
+            setTimeout(() => {
+                typeWriter(text);
+                setInterval(createPetal, 300);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
